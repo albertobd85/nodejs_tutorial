@@ -1,27 +1,12 @@
-const Joi = require('joi');
+const express = require('express');
+const path = require('path');
+const app = express();
 
-const arrayString = ['banana', 'bacon', 'cheese'];
-const arrayObjects = [{ example: 'example1' }, { example: 'example2' }];
+app.use('/public', express.static(path.join(__dirname, 'static')));
+app.set('view engine', 'ejs');
 
-const userInput = {
-    personalInfo: {
-        streetAddress: '12345678dasdasd',
-        city: 'dsfasdfa',
-        state: 'fl'
-    },
-    preferences: arrayString
-};
+const people = require('./routes/people');
 
+app.use('/people', people);
 
-const personalInfoSchema = Joi.object({
-    streetAddress: Joi.string().trim().required(),
-    city: Joi.string().trim().required(),
-    state: Joi.string().trim().length(2).required()
-})
-const preferencesSchema = Joi.array().items(Joi.string());
-const schema = Joi.object({
-    personalInfo: personalInfoSchema,
-    preferences: preferencesSchema
-});
-
-console.log(schema.validate(userInput));
+app.listen(3000);
